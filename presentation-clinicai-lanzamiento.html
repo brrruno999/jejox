@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClinicAI — Lanzamiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0814;
+      --bg-secondary: #15101f;
+      --text-primary: #f5f3fb;
+      --text-secondary: #a299b8;
+      --accent-primary: #8b5cf6;
+      --accent-secondary: #d946ef;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck {
+      height: 100vh;
+      width: 100vw;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    .deck::-webkit-scrollbar { display: none; }
+
+    .slide {
+      height: 100vh;
+      width: 100vw;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(2rem, 6vw, 6rem);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide-content-wrapper {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .slide h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: clamp(1rem, 2vw, 2rem);
+    }
+
+    .slide h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .slide p, .slide li {
+      font-size: clamp(1rem, 1.5vw, 1.5rem);
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .slide .lead {
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      color: var(--text-primary);
+      max-width: 55ch;
+    }
+
+    .eyebrow {
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 1.1vw, 1rem);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-primary);
+      margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+    }
+
+    .accent { color: var(--accent-primary); }
+
+    /* Title slide */
+    .slide-title {
+      background:
+        radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.22), transparent 55%),
+        radial-gradient(ellipse at bottom right, rgba(217, 70, 239, 0.12), transparent 55%);
+    }
+
+    .slide-title .brand-mark {
+      position: absolute;
+      top: clamp(2rem, 4vw, 3rem);
+      left: clamp(2rem, 6vw, 6rem);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .slide-title .brand-mark .monogram {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-title .brand-mark .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .slide-title h1 {
+      font-size: clamp(3rem, 8vw, 6.5rem);
+    }
+
+    .slide-title h1 .grad {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-title .meta {
+      margin-top: 2rem;
+      font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+      color: var(--text-secondary);
+    }
+
+    .slide-title .accent-line {
+      width: clamp(4rem, 8vw, 6rem);
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      margin-bottom: 2rem;
+      border-radius: 2px;
+    }
+
+    /* Section divider (no se usa en 6 slides, pero queda definido) */
+    .slide-divider {
+      background: var(--bg-secondary);
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .slide-divider .section-number {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 700;
+      color: var(--accent-primary);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    /* Content slide */
+    .slide-content ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.75rem, 1.5vw, 1.25rem);
+      margin-top: clamp(1rem, 2vw, 2rem);
+    }
+
+    .slide-content ul li {
+      padding-left: 2rem;
+      position: relative;
+      color: var(--text-primary);
+    }
+
+    .slide-content ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7em;
+      width: 0.75rem;
+      height: 2px;
+      background: var(--accent-primary);
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 3rem);
+      margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    }
+    @media (max-width: 720px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    .stat-card {
+      padding: clamp(1.25rem, 2vw, 2rem);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+    }
+
+    .stat-card .stat {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    .stat-card .stat-label {
+      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* Steps */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    }
+    @media (max-width: 720px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    .step {
+      padding: clamp(1.25rem, 2vw, 1.75rem);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      position: relative;
+    }
+    .step .step-num {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent-primary);
+      margin-bottom: 0.75rem;
+    }
+    .step h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    .step p {
+      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+      line-height: 1.55;
+    }
+
+    /* Closing slide */
+    .slide-closing {
+      background:
+        radial-gradient(ellipse at bottom right, rgba(217, 70, 239, 0.18), transparent 55%),
+        radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15), transparent 55%);
+      text-align: center;
+      align-items: center;
+    }
+    .slide-closing .slide-content-wrapper {
+      text-align: center;
+    }
+    .slide-closing .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .slide-closing .brand-mark .monogram {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: white;
+    }
+    .slide-closing .brand-mark .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .slide-closing h1 {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+    }
+    .slide-closing .lead {
+      margin: 0 auto;
+    }
+    .slide-closing .cta {
+      display: inline-block;
+      margin-top: 2.5rem;
+      padding: 1.1rem 2.25rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 700;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.35);
+    }
+
+    /* Animaciones */
+    .slide.is-active .slide-content-wrapper > * {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .slide.is-active .slide-content-wrapper > *:nth-child(1) { animation-delay: 0ms; }
+    .slide.is-active .slide-content-wrapper > *:nth-child(2) { animation-delay: 100ms; }
+    .slide.is-active .slide-content-wrapper > *:nth-child(3) { animation-delay: 200ms; }
+    .slide.is-active .slide-content-wrapper > *:nth-child(4) { animation-delay: 300ms; }
+    .slide.is-active .slide-content-wrapper > *:nth-child(5) { animation-delay: 400ms; }
+    .slide.is-active .slide-content-wrapper > *:nth-child(6) { animation-delay: 500ms; }
+
+    .slide.is-active .brand-mark {
+      opacity: 0;
+      animation: fadeInUp 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Barra de progreso */
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--border-subtle);
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      width: 0%;
+      transition: width 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .slide.is-active .slide-content-wrapper > *,
+      .slide.is-active .brand-mark {
+        opacity: 1;
+        transform: none;
+      }
+      .deck { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+
+    <!-- 1. TITLE SLIDE -->
+    <section class="slide slide-title">
+      <div class="brand-mark">
+        <div class="monogram">CA</div>
+        <span class="brand-name">ClinicAI</span>
+      </div>
+      <div class="slide-content-wrapper">
+        <div class="accent-line"></div>
+        <p class="eyebrow">Lanzamiento · 2026</p>
+        <h1>Tu recepcionista de IA <span class="grad">que nunca duerme.</span></h1>
+        <p class="lead">Agendá turnos por WhatsApp 24/7, sin perder pacientes fuera de horario ni saturar a tu equipo.</p>
+        <p class="meta">ClinicAI · Para clínicas estéticas, dermatología y wellness</p>
+      </div>
+    </section>
+
+    <!-- 2. PROBLEMA -->
+    <section class="slide slide-content">
+      <div class="slide-content-wrapper">
+        <p class="eyebrow">El problema</p>
+        <h2>Tu clínica está perdiendo pacientes sin darse cuenta.</h2>
+        <p class="lead">Cada consulta sin responder es un turno que se va a la competencia.</p>
+        <ul>
+          <li>68% de las consultas llegan fuera de horario y se pierden</li>
+          <li>La recepcionista pasa 3 horas al día con preguntas repetitivas</li>
+          <li>30% de los turnos se caen por falta de recordatorios</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. SOLUCIÓN -->
+    <section class="slide slide-content">
+      <div class="slide-content-wrapper">
+        <p class="eyebrow">La solución</p>
+        <h2>Un agente de IA que trabaja por tu clínica, sin descanso.</h2>
+        <p class="lead">Entrenado con la información de tu clínica. Conversa, califica, agenda y deriva — como un humano, pero a cualquier hora.</p>
+        <ul>
+          <li>Responde en segundos, en lenguaje natural</li>
+          <li>Se integra con el calendario y agenda en tiempo real</li>
+          <li>Deriva consultas complejas a tu equipo</li>
+          <li>Aprende tratamientos, precios y políticas</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. CÓMO FUNCIONA -->
+    <section class="slide slide-content">
+      <div class="slide-content-wrapper">
+        <p class="eyebrow">El proceso</p>
+        <h2>Funcionando en 72 horas.</h2>
+        <p class="lead">Sin técnicos, sin integraciones complicadas, sin aprender herramientas nuevas.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h3>Configuramos tu IA</h3>
+            <p>Cargamos tratamientos, precios, horarios y FAQs. El agente aprende tu negocio.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <h3>Conectamos WhatsApp</h3>
+            <p>Integración a tu número de WhatsApp Business en minutos. Sin cambiar nada.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <h3>Piloto automático</h3>
+            <p>Tu IA recibe consultas, agenda turnos y envía recordatorios mientras atendés pacientes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. RESULTADOS -->
+    <section class="slide slide-content">
+      <div class="slide-content-wrapper">
+        <p class="eyebrow">Resultados a 30 días</p>
+        <h2>Lo que cambia desde el primer mes.</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat">+40%</div>
+            <div class="stat-label">Turnos agendados fuera del horario de atención</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat">−70%</div>
+            <div class="stat-label">Carga de consultas repetitivas para la recepción</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat">&lt;10s</div>
+            <div class="stat-label">Tiempo promedio de respuesta, a cualquier hora</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat">−55%</div>
+            <div class="stat-label">Ausencias gracias a recordatorios automáticos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat">24/7</div>
+            <div class="stat-label">Disponibilidad sin pausas ni días libres</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat">9.2</div>
+            <div class="stat-label">Puntuación promedio de satisfacción sobre 10</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CLOSING / CTA -->
+    <section class="slide slide-closing">
+      <div class="slide-content-wrapper">
+        <div class="brand-mark">
+          <div class="monogram">CA</div>
+          <span class="brand-name">ClinicAI</span>
+        </div>
+        <h1>Agendá tu demo <span style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">y velo en acción.</span></h1>
+        <p class="lead">30 minutos. Demo en vivo con el perfil de tu clínica. Salís con un plan de implementación claro.</p>
+        <a class="cta" href="mailto:hola@clinicai.com">Quiero mi demo gratuita →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="progress-bar" aria-hidden="true">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <script>
+    (function() {
+      const deck = document.getElementById('deck');
+      const slides = Array.from(deck.querySelectorAll('.slide'));
+      const progressFill = document.getElementById('progress-fill');
+      let currentIndex = 0;
+
+      function updateProgress(index) {
+        const pct = ((index + 1) / slides.length) * 100;
+        progressFill.style.width = pct + '%';
+      }
+
+      function setActive(index) {
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+        updateProgress(index);
+        currentIndex = index;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const idx = slides.indexOf(entry.target);
+            if (idx !== -1) setActive(idx);
+          }
+        });
+      }, { threshold: [0.5], root: deck });
+
+      slides.forEach(s => observer.observe(s));
+
+      function goTo(index) {
+        const clamped = Math.max(0, Math.min(slides.length - 1, index));
+        slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'ArrowDown':
+          case 'ArrowRight':
+          case 'PageDown':
+          case ' ':
+            e.preventDefault();
+            goTo(currentIndex + 1);
+            break;
+          case 'ArrowUp':
+          case 'ArrowLeft':
+          case 'PageUp':
+            e.preventDefault();
+            goTo(currentIndex - 1);
+            break;
+          case 'Home':
+            e.preventDefault();
+            goTo(0);
+            break;
+          case 'End':
+            e.preventDefault();
+            goTo(slides.length - 1);
+            break;
+        }
+      });
+
+      let touchStartY = null;
+      deck.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      deck.addEventListener('touchend', (e) => {
+        if (touchStartY === null) return;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diff = touchStartY - touchEndY;
+        if (Math.abs(diff) > 60) {
+          if (diff > 0) goTo(currentIndex + 1);
+          else goTo(currentIndex - 1);
+        }
+        touchStartY = null;
+      }, { passive: true });
+
+      setActive(0);
+    })();
+  </script>
+</body>
+</html>
